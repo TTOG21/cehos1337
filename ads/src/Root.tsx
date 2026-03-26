@@ -1,6 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { AdBanner, AdVariant } from "./AdBanner";
+import { NeonAuraCompositions } from "./neon-aura/NeonAuraRoot";
 
 // All 4 ad variations for the Heuri-stica campaign
 export const AD_VARIANTS: AdVariant[] = [
@@ -33,6 +34,7 @@ export const AD_VARIANTS: AdVariant[] = [
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <NeonAuraCompositions />
       {AD_VARIANTS.map((variant, i) => (
         <Composition
           key={variant.angle}
