@@ -1,6 +1,8 @@
 import React from "react";
 import { Composition } from "remotion";
 import { NeonAuraAd, NeonAuraVariant } from "./NeonAuraAd";
+import { NeonAuraTestimonial, TESTIMONIALS } from "./NeonAuraTestimonial";
+import { NeonAuraStory } from "./NeonAuraStory";
 
 export const NEON_AURA_VARIANTS: NeonAuraVariant[] = [
   // 1 — General brand / hero
@@ -97,5 +99,40 @@ export const NeonAuraCompositions: React.FC = () => (
         defaultProps={v}
       />
     ))}
+
+    {/* Testimonial cards — 1:1 and 9:16 */}
+    {TESTIMONIALS.map((t, i) => (
+      <React.Fragment key={`testimonial-${i}`}>
+        <Composition
+          id={`NeonAura-Testimonial-${i + 1}-1x1`}
+          component={NeonAuraTestimonial}
+          durationInFrames={120}
+          fps={30}
+          width={1080}
+          height={1080}
+          defaultProps={t}
+        />
+        <Composition
+          id={`NeonAura-Testimonial-${i + 1}-9x16`}
+          component={NeonAuraTestimonial}
+          durationInFrames={120}
+          fps={30}
+          width={1080}
+          height={1920}
+          defaultProps={t}
+        />
+      </React.Fragment>
+    ))}
+
+    {/* Story ad — 4-phase 9:16 (120 frames = 4 seconds) */}
+    <Composition
+      id="NeonAura-Story-9x16"
+      component={NeonAuraStory}
+      durationInFrames={120}
+      fps={30}
+      width={1080}
+      height={1920}
+      defaultProps={{}}
+    />
   </>
 );
