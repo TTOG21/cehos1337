@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/install-website-builder-skill-Ts6eG]
+    branches: [main]
 
 permissions:
   contents: read
