@@ -1,105 +1,130 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import Image from 'next/image';
 
 export default function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background orbs */}
+    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Cinematic background layers */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* Primary blue orb */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-20 blur-[120px]"
-          style={{ background: 'var(--blue)' }}
-          animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(27,141,184,0.2) 0%, transparent 70%)' }}
+          animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         />
+        {/* Magenta orb */}
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-[120px]"
-          style={{ background: 'var(--magenta)' }}
-          animate={{ scale: [1, 1.3, 1], x: [0, -20, 0], y: [0, 30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          className="absolute -bottom-20 -right-20 w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(181,55,123,0.18) 0%, transparent 70%)' }}
+          animate={{ x: [0, -40, 0], y: [0, -50, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
         />
+        {/* Gold accent */}
         <motion.div
-          className="absolute top-1/2 right-1/3 w-[300px] h-[300px] rounded-full opacity-10 blur-[100px]"
-          style={{ background: 'var(--gold)' }}
-          animate={{ scale: [1, 1.4, 1], x: [0, 40, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(212,168,32,0.1) 0%, transparent 70%)' }}
+          animate={{ x: [0, 60, 0], y: [0, -30, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
         />
+
+        {/* Grid lines */}
+        <div
+          className="absolute inset-0 opacity-[0.025]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)`,
+            backgroundSize: '80px 80px',
+          }}
+        />
+
+        {/* Radial vignette */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, var(--dark) 80%)' }} />
       </div>
 
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24">
+      {/* Parallax content */}
+      <motion.div style={{ y, opacity, scale }} className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-20">
         {/* Logo */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex justify-center mb-10"
+          initial={{ opacity: 0, scale: 0.7, filter: 'blur(20px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="flex justify-center mb-12"
         >
           <Image
             src="/logo.svg"
             alt="Skypol Arts & Media"
-            width={220}
-            height={88}
-            className="h-20 md:h-28 w-auto object-contain"
+            width={260}
+            height={104}
+            className="h-24 md:h-36 w-auto object-contain drop-shadow-[0_0_40px_rgba(27,141,184,0.2)]"
             priority
           />
         </motion.div>
 
-        {/* Tagline badge */}
+        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-medium tracking-widest uppercase"
-          style={{ border: '1px solid rgba(27,141,184,0.4)', color: 'var(--blue)', background: 'rgba(27,141,184,0.08)' }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="inline-flex items-center gap-3 px-5 py-2 rounded-full mb-8 glass"
         >
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--blue)' }} />
-          Full-Service Kreativagentur
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: 'var(--blue)' }} />
+            <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: 'var(--blue)' }} />
+          </span>
+          <span className="text-xs font-medium tracking-[0.2em] uppercase text-white/60">Full-Service Kreativagentur</span>
         </motion.div>
 
-        {/* Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.35 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight"
-        >
-          Wir machen{' '}
-          <span
-            className="relative inline-block"
-            style={{
-              background: `linear-gradient(135deg, var(--blue), var(--magenta))`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
+        {/* Headline — split line animation */}
+        <div className="overflow-hidden mb-3">
+          <motion.h1
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] leading-[0.95]"
+          >
+            Wir machen
+          </motion.h1>
+        </div>
+        <div className="overflow-hidden mb-3">
+          <motion.h1
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] leading-[0.95] gradient-text"
           >
             Ihre Marke
-          </span>
-          <br />
-          sichtbar.
-        </motion.h1>
+          </motion.h1>
+        </div>
+        <div className="overflow-hidden mb-8">
+          <motion.h1
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] leading-[0.95]"
+          >
+            sichtbar.
+          </motion.h1>
+        </div>
 
-        {/* Sub-headline */}
+        {/* Subheadline */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="text-base md:text-lg text-white/40 max-w-lg mx-auto mb-12 leading-relaxed font-light"
         >
-          Fotografie · Grafikdesign · Social Media & Branding.
+          Fotografie · Grafikdesign · Social Media.
+          <br />
           Von der Idee bis zur fertigen Kampagne — aus einer Hand.
         </motion.p>
 
@@ -107,40 +132,45 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.65 }}
+          transition={{ duration: 0.7, delay: 1.1 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <a
+          <motion.a
             href="#leistungen"
-            className="px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:scale-105"
-            style={{ background: 'linear-gradient(135deg, var(--blue), #1565a8)', color: '#fff' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(27,141,184,0.3)' }}
+            whileTap={{ scale: 0.97 }}
+            className="px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase"
+            style={{ background: 'linear-gradient(135deg, var(--blue), #1477a0)', color: '#fff' }}
           >
-            Unsere Leistungen
-          </a>
-          <a
+            Leistungen entdecken
+          </motion.a>
+          <motion.a
             href="#kontakt"
-            className="px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide border border-white/20 text-white/80 hover:border-white/40 hover:text-white transition-all duration-200"
+            whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.3)' }}
+            whileTap={{ scale: 0.97 }}
+            className="px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase border border-white/10 text-white/60 hover:text-white transition-colors duration-300"
           >
-            Projekt anfragen →
-          </a>
+            Projekt starten →
+          </motion.a>
         </motion.div>
+      </motion.div>
 
-        {/* Scroll indicator */}
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="flex flex-col items-center gap-2"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1"
-          >
-            <div className="w-1 h-2 rounded-full bg-white/40" />
-          </motion.div>
+          <span className="text-[10px] tracking-[0.3em] uppercase text-white/20">Scroll</span>
+          <div className="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

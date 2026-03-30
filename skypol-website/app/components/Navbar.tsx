@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, useTransform } from 'framer-motion';
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -10,100 +10,104 @@ export default function Navbar() {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
-    setScrolled(latest > 40);
+    setScrolled(latest > 60);
   });
 
   const links = [
     { href: '#leistungen', label: 'Leistungen' },
+    { href: '#portfolio', label: 'Portfolio' },
     { href: '#ueber-uns', label: 'Über uns' },
     { href: '#kontakt', label: 'Kontakt' },
   ];
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={{
-        background: scrolled ? 'rgba(10,10,10,0.95)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
-      }}
-      initial={{ y: -80 }}
+      className="fixed top-0 left-0 right-0 z-50"
+      initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
-          <Image
-            src="/logo.svg"
-            alt="Skypol Arts & Media"
-            width={120}
-            height={48}
-            className="h-10 w-auto object-contain"
-            priority
-          />
-        </a>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-white/70 hover:text-white transition-colors duration-200 tracking-wide"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#kontakt"
-            className="text-sm px-5 py-2 rounded-full font-medium transition-all duration-200"
-            style={{ background: 'var(--blue)', color: '#fff' }}
-          >
-            Anfrage stellen
+      <div
+        className="transition-all duration-500"
+        style={{
+          background: scrolled ? 'rgba(6,6,10,0.85)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px) saturate(1.8)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-2 group">
+            <Image
+              src="/logo.svg"
+              alt="Skypol Arts & Media"
+              width={130}
+              height={52}
+              className="h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              priority
+            />
           </a>
-        </nav>
 
-        {/* Mobile burger */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Menu"
-        >
-          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-        </button>
+          <nav className="hidden md:flex items-center gap-1">
+            {links.map((link, i) => (
+              <motion.a
+                key={link.href}
+                href={link.href}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+                className="relative px-4 py-2 text-[13px] text-white/50 hover:text-white transition-colors duration-300 tracking-wider uppercase font-medium group"
+              >
+                {link.label}
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-[var(--blue)] to-[var(--magenta)] transition-all duration-300 group-hover:w-full" />
+              </motion.a>
+            ))}
+            <motion.a
+              href="#kontakt"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="ml-4 text-[13px] px-6 py-2.5 rounded-full font-semibold tracking-wider uppercase transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(27,141,184,0.3)]"
+              style={{ background: 'linear-gradient(135deg, var(--blue), #1477a0)', color: '#fff' }}
+            >
+              Anfrage
+            </motion.a>
+          </nav>
+
+          <button
+            className="md:hidden flex flex-col gap-[5px] p-2 z-50"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Menu"
+          >
+            <motion.span animate={{ rotate: mobileOpen ? 45 : 0, y: mobileOpen ? 7 : 0 }} className="block h-[1.5px] w-6 bg-white origin-center" />
+            <motion.span animate={{ opacity: mobileOpen ? 0 : 1, scaleX: mobileOpen ? 0 : 1 }} className="block h-[1.5px] w-6 bg-white" />
+            <motion.span animate={{ rotate: mobileOpen ? -45 : 0, y: mobileOpen ? -7 : 0 }} className="block h-[1.5px] w-6 bg-white origin-center" />
+          </button>
+        </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile full-screen menu */}
       <motion.div
-        className="md:hidden overflow-hidden"
+        className="md:hidden fixed inset-0 flex flex-col items-center justify-center gap-8"
         initial={false}
-        animate={{ height: mobileOpen ? 'auto' : 0, opacity: mobileOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        style={{ background: 'rgba(10,10,10,0.98)' }}
+        animate={{
+          opacity: mobileOpen ? 1 : 0,
+          pointerEvents: mobileOpen ? 'auto' as const : 'none' as const,
+        }}
+        transition={{ duration: 0.4 }}
+        style={{ background: 'rgba(6,6,10,0.97)', backdropFilter: 'blur(30px)' }}
       >
-        <div className="px-6 pb-6 flex flex-col gap-4">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="text-white/80 hover:text-white py-2 border-b border-white/10 text-sm tracking-wide"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#kontakt"
+        {links.map((link, i) => (
+          <motion.a
+            key={link.href}
+            href={link.href}
             onClick={() => setMobileOpen(false)}
-            className="text-sm px-5 py-2.5 rounded-full font-medium text-center mt-2"
-            style={{ background: 'var(--blue)', color: '#fff' }}
+            animate={{ y: mobileOpen ? 0 : 30, opacity: mobileOpen ? 1 : 0 }}
+            transition={{ delay: mobileOpen ? i * 0.1 : 0, duration: 0.4 }}
+            className="text-2xl font-light tracking-widest uppercase text-white/80 hover:text-white transition-colors"
           >
-            Anfrage stellen
-          </a>
-        </div>
+            {link.label}
+          </motion.a>
+        ))}
       </motion.div>
     </motion.header>
   );
