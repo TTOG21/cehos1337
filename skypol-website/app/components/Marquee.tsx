@@ -37,7 +37,7 @@ export default function Marquee() {
       >
         {doubled.map((word, i) => (
           <span
-            key={i}
+            key={`${word.text}-${i}`}
             className="text-sm font-medium tracking-widest uppercase flex-shrink-0"
             style={{ color: word.color }}
           >

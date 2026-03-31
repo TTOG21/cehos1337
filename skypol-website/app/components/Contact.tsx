@@ -19,7 +19,7 @@ export default function Contact() {
 
   const inputClass = (field: string) =>
     `w-full rounded-2xl px-5 py-4 text-sm text-white placeholder-white/20 outline-none resize-none transition-all duration-300 ${
-      focused === field ? 'border-white/20' : 'border-white/06'
+      focused === field ? 'border-white/20' : 'border-white/10'
     }`;
 
   const inputStyle = (field: string) => ({

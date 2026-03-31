@@ -37,16 +37,17 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             {[
-              { label: 'IN', href: '#' },
-              { label: 'IG', href: '#' },
-              { label: 'FB', href: '#' },
-            ].map(({ label, href }) => (
+              { label: 'IN', ariaLabel: 'LinkedIn', href: '#' },
+              { label: 'IG', ariaLabel: 'Instagram', href: '#' },
+              { label: 'FB', ariaLabel: 'Facebook', href: '#' },
+            ].map(({ label, ariaLabel, href }) => (
               <motion.a
                 key={label} href={href}
+                aria-label={ariaLabel}
                 className="w-9 h-9 rounded-full glass flex items-center justify-center text-[10px] font-bold text-white/30 hover:text-white/70 transition-colors duration-300"
                 whileHover={{ scale: 1.1 }}
               >
-                {label}
+                <span aria-hidden="true">{label}</span>
               </motion.a>
             ))}
           </div>
