@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 const services = [
@@ -92,7 +92,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 
       {/* Items */}
       <ul className="space-y-3">
-        {service.items.map((item, i) => (
+        {service.items.map((item) => (
           <li key={item} className="flex items-center gap-3 text-sm text-white/50 group-hover:text-white/70 transition-colors duration-300">
             <span
               className="w-1 h-1 rounded-full flex-shrink-0 transition-all duration-500 group-hover:w-4 group-hover:h-[2px] group-hover:rounded-none"
@@ -117,12 +117,11 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 }
 
 export default function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' });
 
   return (
-    <section id="leistungen" ref={sectionRef} className="py-32 px-6 relative">
+    <section id="leistungen" className="py-32 px-6 relative">
       {/* Divider */}
       <div className="divider max-w-6xl mx-auto mb-32" />
 

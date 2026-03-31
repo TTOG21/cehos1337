@@ -1,8 +1,37 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
+
+const rotatingWords = ['sichtbar.', 'stark.', 'einzigartig.', 'unvergesslich.'];
+
+function WordRotator() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % rotatingWords.length), 2500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="relative inline-block overflow-hidden" style={{ minWidth: '340px' }}>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={index}
+          initial={{ y: '100%', opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: '-100%', opacity: 0 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          className="block"
+          style={{ color: ['#1B8DB8', '#B5377B', '#D4A820', '#1B8DB8'][index % 4] }}
+        >
+          {rotatingWords[index]}
+        </motion.span>
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -106,14 +135,14 @@ export default function Hero() {
           </motion.h1>
         </div>
         <div className="overflow-hidden mb-8">
-          <motion.h1
+          <motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] leading-[0.95]"
           >
-            sichtbar.
-          </motion.h1>
+            <WordRotator />
+          </motion.div>
         </div>
 
         {/* Subheadline */}

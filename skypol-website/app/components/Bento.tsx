@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 const tiles = [
   {
@@ -51,7 +51,6 @@ const tiles = [
     bg: 'radial-gradient(ellipse at 10% 50%, rgba(27,141,184,0.15) 0%, rgba(181,55,123,0.1) 100%)',
     large: false,
     emoji: '◈',
-    wide: true,
   },
 ];
 
@@ -61,58 +60,29 @@ const stats = [
   { value: 3, suffix: '', label: 'Bereiche', color: 'var(--magenta)' },
 ];
 
-function Counter({ value, suffix, color }: { value: number; suffix: string; color: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-
-  return (
-    <motion.span
-      ref={ref}
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : {}}
-      className="text-3xl font-black"
-      style={{ color }}
-    >
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.01 }}
-      >
-        {inView && (
-          <CountUp end={value} suffix={suffix} color={color} />
-        )}
-      </motion.span>
-    </motion.span>
-  );
-}
-
 function CountUp({ end, suffix, color }: { end: number; suffix: string; color: string }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+
+  useEffect(() => {
+    if (!inView || !ref.current) return;
+    const duration = 1500;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(end * eased);
+      if (ref.current) ref.current.textContent = `${current}${suffix}`;
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [inView, end, suffix]);
 
   return (
-    <motion.span
-      ref={ref}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      onViewportEnter={() => {
-        if (!ref.current) return;
-        let start = 0;
-        const duration = 1500;
-        const startTime = performance.now();
-        const tick = (now: number) => {
-          const elapsed = now - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const current = Math.round(start + (end - start) * eased);
-          if (ref.current) ref.current.textContent = `${current}${suffix}`;
-          if (progress < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      }}
-      style={{ color }}
-    >
+    <span ref={ref} className="text-3xl font-black" style={{ color }}>
       0{suffix}
-    </motion.span>
+    </span>
   );
 }
 
@@ -157,7 +127,7 @@ export default function Bento() {
               whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
               style={{ background: tile.bg }}
             >
-              {/* Animated border top */}
+              {/* Top border on hover */}
               <div
                 className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{ background: `linear-gradient(90deg, transparent, ${tile.color}, transparent)` }}
@@ -170,7 +140,6 @@ export default function Bento() {
                 >
                   {tile.emoji}
                 </div>
-
                 <div>
                   <h3 className={`font-bold text-white mb-1 ${tile.large ? 'text-2xl md:text-3xl' : 'text-lg'}`}>
                     {tile.title}
